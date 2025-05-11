@@ -22,7 +22,7 @@ async function startServer() {
       console.log(`Serveur lancé sur http://localhost:${ENV.PORT}`);
     });
   } catch (err) {
-    console.error('Échec du démarrage du serveur :', err.message);
+    console.error('❌ Échec du démarrage du serveur :', err);
     process.exit(1);
   }
 }
