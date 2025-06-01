@@ -1,6 +1,7 @@
 const { updateValidationSchema } = require('../validators/user.validators');
 const { createVehicleSchema, updateVehicleSchema } = require('../validators/vehicles.validators');
 const { registerValidationSchema, loginValidationSchema } = require('../validators/auth.validators');
+const { refreshTokenValidationSchema } = require ('../validators/refreshToken.validators')
 
 /**
  * Middleware to validate the request body using the given Joi schema.
@@ -26,5 +27,6 @@ module.exports = {
   validateCreateVehicles: validateRequest(createVehicleSchema),
   validateUpdateVehicles: validateRequest(updateVehicleSchema),
   validateRegistration: validateRequest(registerValidationSchema),
-  validateLogin: validateRequest(loginValidationSchema)
+  validateLogin: validateRequest(loginValidationSchema),
+  validateRefreshToken: validateRequest(refreshTokenValidationSchema),
 };

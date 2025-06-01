@@ -1,5 +1,3 @@
-// src/seeders/initDB.js
-
 const bcrypt = require('bcrypt');
 const User = require('../models/user.model');
 const Vehicle = require('../models/vehicle.model');
@@ -44,21 +42,23 @@ async function initDB() {
     }
   ]);
 
-  // Insertion de véhicules associés aux utilisateurs
+  // Insertion de véhicules associés aux utilisateurs avec rentalPrice
   await Vehicle.bulkCreate([
     {
       make: 'Tesla',
       model: 'Model S',
       year: 2020,
       vin: 'TESLA2020VIN001',
-      ownerId: users[1].id // user1
+      rentalPrice: 150.0,    
+      ownerId: users[1].id   
     },
     {
       make: 'Ford',
       model: 'Mustang',
       year: 2018,
       vin: 'FORD2018VIN001',
-      ownerId: users[2].id // user2
+      rentalPrice: 120.0,
+      ownerId: users[2].id   
     }
   ]);
 

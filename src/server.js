@@ -1,12 +1,9 @@
-// src/server.js
 const app = require('./app');
 const db = require('./config/db.config');
 const ENV = require('./config/env.config'); 
 const initDB = require('./seeders/initDB');
 
-// Import des modèles (associations Sequelize, si besoin)
-require('./models/user.model');
-require('./models/vehicle.model');
+require('./models');
 
 async function startServer() {
   try {
@@ -22,7 +19,7 @@ async function startServer() {
       console.log(`Serveur lancé sur http://localhost:${ENV.PORT}`);
     });
   } catch (err) {
-    console.error('❌ Échec du démarrage du serveur :', err);
+    console.error('Échec du démarrage du serveur :', err);
     process.exit(1);
   }
 }

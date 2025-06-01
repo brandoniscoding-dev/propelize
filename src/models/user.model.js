@@ -1,4 +1,3 @@
-// src/models/user.model.js
 const { DataTypes } = require('sequelize');
 const db = require('../config/db.config');
 
@@ -26,7 +25,11 @@ const User = db.define('User', {
   role: {
     type: DataTypes.ENUM('admin', 'user'),
     defaultValue: 'user'
-  }
+  },
+  refreshToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true

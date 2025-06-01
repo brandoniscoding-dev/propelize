@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
-const { JWT_SECRET } = require('../config/env.config');
+const ENV = require('../config/env.config');
 
 /**
  * Middleware to authenticate requests by verifying the JWT token.
- * - Extracts the token from the Authorization header.
+ * - Extracts the token from the Authorization header (Bearer <token>).
  * - Verifies the token and fetches the associated user from the database.
+ * - Checks that the user's refreshToken is not null (indicating an active session).
  * - Attaches user information to the request object for downstream routes.
  *
  * @param {Object} req - The Express request object.
@@ -14,25 +15,26 @@ const { JWT_SECRET } = require('../config/env.config');
  * @returns {void} Calls next middleware or responds with an error.
  */
 const authenticate = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  // Ensure token is present and valid
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Missing or invalid token' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
 
-    // Fetch user from DB based on the decoded token ID
-    const user = await User.findByPk(decoded.id);
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
+    const user = await User.findByPk(decoded.id, {
+      attributes: ['id', 'username', 'email', 'role', 'refreshToken'],
+    });
+
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    // Attach user information to request for downstream routes
+    if (!user.refreshToken) {
+      return res.status(401).json({ message: 'Session expired, please log in again' });
+    }
+
     req.user = {
       id: user.id,
       role: user.role,
@@ -40,8 +42,8 @@ const authenticate = async (req, res, next) => {
     };
 
     next();
-  } catch (err) {
-    console.error("Authentication error:", err);
+  } catch (error) {
+    console.error('Authentication error:', error.message);
     return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
@@ -56,8 +58,7 @@ const authenticate = async (req, res, next) => {
  */
 const authorize = (...roles) => {
   return (req, res, next) => {
-    // Ensure user has the required role
-    if (!roles.includes(req.user.role)) {
+    if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Access forbidden' });
     }
     next();
@@ -66,5 +67,5 @@ const authorize = (...roles) => {
 
 module.exports = {
   authenticate,
-  authorize
+  authorize,
 };

@@ -3,24 +3,10 @@ const router = express.Router();
 const vehicleController = require('../controllers/vehicle.controller');
 const { authenticate, authorize } = require('../middlewares/auth.middleware');
 const {
-  createVehicleSchema,
-  updateVehicleSchema
-} = require('../validators/vehicles.validators');
+  validateCreateVehicles,
+  validateUpdateVehicles
+} = require('../middlewares/validate.middleware');
 
-// Generic middleware to validate request bodies against Joi schemas
-/**
- * @param {Object} schema - Joi validation schema
- * @returns {Function} Express middleware for validating request body
- */
-const validateRequest = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
-    next();
-  };
-};
 
 // Apply authentication middleware to all vehicle routes
 router.use(authenticate);
@@ -30,35 +16,35 @@ router.use(authenticate);
  * @desc Create a new vehicle (for authenticated users)
  * @access Private
  */
-router.post('/vehicle', validateRequest(createVehicleSchema), vehicleController.createvehicle);
+router.post('/vehicle', validateCreateVehicles, vehicleController.createVehicle);
 
 /**
  * @route PUT /vehicles/vehicle/:id
  * @desc Update a vehicle by ID
  * @access Private
  */
-router.put('/vehicle/:id', validateRequest(updateVehicleSchema), vehicleController.updatevehicle);
+router.put('/vehicle/:id', validateUpdateVehicles, vehicleController.updateVehicle);
 
 /**
  * @route DELETE /vehicles/vehicle/:id
  * @desc Delete a vehicle by ID
  * @access Private
  */
-router.delete('/vehicle/:id', vehicleController.deletevehicle);
+router.delete('/vehicle/:id', vehicleController.deleteVehicle);
 
 /**
  * @route GET /vehicles/vehicle/:id
  * @desc Get a vehicle by its ID
  * @access Private
  */
-router.get('/vehicle/:id', vehicleController.getvehicleById);
+router.get('/vehicle/:id', vehicleController.getVehicleById);
 
 /**
  * @route GET /vehicles
  * @desc Get all vehicles for the current user
  * @access Private
  */
-router.get('/vehicles', vehicleController.getAllvehicles);
+router.get('/vehicles', vehicleController.getAllVehicles);
 
 /**
  * @route GET /vehicles/vehicle/search/:vin

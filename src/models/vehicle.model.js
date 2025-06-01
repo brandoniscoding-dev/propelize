@@ -1,7 +1,5 @@
-// src/models/vehicle.model.js
 const { DataTypes } = require('sequelize');
 const db = require('../config/db.config');
-const User = require('./user.model');
 
 const Vehicle = db.define('Vehicle', {
   id: {
@@ -25,6 +23,10 @@ const Vehicle = db.define('Vehicle', {
     type: DataTypes.STRING,
     unique: true
   },
+  rentalPrice: {
+    type: DataTypes.FLOAT,
+    allowNull: false
+  },
   ownerId: {
     type: DataTypes.UUID,
     allowNull: false
@@ -33,9 +35,5 @@ const Vehicle = db.define('Vehicle', {
   tableName: 'vehicles',
   timestamps: true
 });
-
-// Association
-Vehicle.belongsTo(User, { foreignKey: 'ownerId', as: 'owner' });
-User.hasMany(Vehicle, { foreignKey: 'ownerId', as: 'vehicles' });
 
 module.exports = Vehicle;

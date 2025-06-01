@@ -2,14 +2,77 @@ const User = require('../models/user.model');
 const bcrypt = require('bcryptjs');
 
 /**
+ * Fetch the currently authenticated user's profile.
+ * Throws an error if the user does not exist.
+ *
+ * @param {string} id - User UUID
+ * @returns {Object} User details (id, username, email, role)
+ */
+const getCurrentUser = async (id) => {
+  const user = await User.findByPk(id, {
+    attributes: ['id', 'username', 'email', 'role'],
+  });
+  if (!user) {
+    const error = new Error("User not found");
+    error.status = 404;
+    throw error;
+  }
+  return user;
+};
+
+/**
+ * Update the currently authenticated user's profile.
+ * If password is provided, it is hashed before update.
+ *
+ * @param {string} id - User UUID
+ * @param {Object} data - Fields to update
+ * @returns {Object} Updated user details (id, username, email, role)
+ */
+const updateCurrentUser = async (id, data) => {
+  const user = await User.findByPk(id, {
+    attributes: ['id', 'username', 'email', 'role'],
+  });
+  if (!user) {
+    const error = new Error("User not found");
+    error.status = 404;
+    throw error;
+  }
+
+  if (data.password) {
+    data.password = await bcrypt.hash(data.password, 10);
+  }
+
+  await user.update(data);
+  return user;
+};
+
+/**
+ * Delete the currently authenticated user's account.
+ * Throws if the user does not exist.
+ *
+ * @param {string} id - User UUID
+ */
+const deleteCurrentUser = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    const error = new Error("User not found");
+    error.status = 404;
+    throw error;
+  }
+  await user.destroy();
+};
+
+/**
  * Fetch a user by ID.
  * Throws an error if the user does not exist.
  *
  * @param {string} id - User UUID
- * @returns {Object} User instance
+ * @returns {Object} User details (id, username, email, role)
  */
 const getUserById = async (id) => {
-  const user = await User.findByPk(id);
+  const user = await User.findByPk(id, {
+    attributes: ['id', 'username', 'email', 'role'],
+  });
   if (!user) {
     const error = new Error("User not found");
     error.status = 404;
@@ -24,7 +87,7 @@ const getUserById = async (id) => {
  *
  * @param {string} id - User UUID
  * @param {Object} data - Fields to update
- * @returns {Object} Updated user instance
+ * @returns {Object} Updated user details (id, username, email, role)
  */
 const updateUserById = async (id, data) => {
   const user = await getUserById(id);
@@ -52,15 +115,20 @@ const deleteUserById = async (id) => {
  * Retrieve all users.
  * Typically restricted to admin users.
  *
- * @returns {Array} List of all users
+ * @returns {Array} List of user details (id, username, email, role)
  */
 const getAllUsers = async () => {
-  return await User.findAll();
+  return await User.findAll({
+    attributes: ['id', 'username', 'email', 'role'],
+  });
 };
 
 module.exports = {
+  getCurrentUser,
+  updateCurrentUser,
+  deleteCurrentUser,
   getUserById,
   updateUserById,
   deleteUserById,
-  getAllUsers
+  getAllUsers,
 };
