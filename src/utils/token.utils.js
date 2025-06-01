@@ -5,12 +5,16 @@ const ENV = require('../config/env.config');
  * Generate an access token for a user.
  * @param {Object} user - User object with id and role.
  * @returns {string} JWT access token.
+ * @throws {Error} If user object is missing id or role.
  */
 const generateAccessToken = (user) => {
+  if (!user || !user.id || !user.role) {
+    throw new Error('User object must contain id and role');
+  }
   return jwt.sign(
     { id: user.id, role: user.role },
     ENV.JWT_SECRET,
-    { expiresIn: '15m' } // Durée courte pour l'accessToken
+    { expiresIn: '15m' }
   );
 };
 
@@ -18,12 +22,16 @@ const generateAccessToken = (user) => {
  * Generate a refresh token for a user.
  * @param {Object} user - User object with id.
  * @returns {string} JWT refresh token.
+ * @throws {Error} If user object is missing id.
  */
 const generateRefreshToken = (user) => {
+  if (!user || !user.id) {
+    throw new Error('User object must contain id');
+  }
   return jwt.sign(
     { id: user.id },
     ENV.JWT_SECRET,
-    { expiresIn: '7d' } // Durée longue pour le refreshToken
+    { expiresIn: '7d' }
   );
 };
 
