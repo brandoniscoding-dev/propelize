@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import jwt from 'jsonwebtoken';
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../../../src/utils/token.utils';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../../../src/utils/token.util';
 
 // Mock environment configuration
 vi.mock('../../../src/config/env.config', () => ({

@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/token.utils');
+const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/token.util');
 const User = require('../models/user.model');
 
 /**
