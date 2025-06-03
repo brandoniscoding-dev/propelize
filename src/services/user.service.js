@@ -1,5 +1,5 @@
-const User = require('../models/user.model');
-const bcrypt = require('bcryptjs');
+import * as  User  from'../models/user.model';
+import bcrypt  from 'bcryptjs';
 
 /**
  * Fetch the currently authenticated user's profile.

@@ -1,5 +1,5 @@
-const userService = require('../services/user.service');
-
+import* as userService from  '../services/user.service';
+ 
 /**
  * Get the profile of the currently authenticated user.
  * Calls the user service to fetch the user by ID.

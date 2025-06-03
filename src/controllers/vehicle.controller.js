@@ -1,4 +1,4 @@
-const vehicleService = require('../services/vehicle.service');
+import * as  vehicleService from '../services/vehicle.service';
 
 /**
  * Create a new vehicle.
@@ -10,12 +10,24 @@ const vehicleService = require('../services/vehicle.service');
  */
 const createVehicle = async (req, res) => {
   try {
+    // Validate required fields
+    const requiredFields = ['make', 'model', 'vin', 'ownerId'];
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ 
+          error: `${field} is required` 
+        });
+      }
+    }
+
+    // Create vehicle
     const vehicle = await vehicleService.createVehicle(req.body);
-    res.status(201).json(vehicle);
-    logger.info('Vehicle created successfully');
-  } catch (err) {
-    res.status(500).json({ error: 'Server error while creating vehicle' });
-    logger.error('Error creating vehicle: ' + err.message);
+    
+    return res.status(201).json(vehicle);
+  } catch (error) {
+    return res.status(500).json({
+      error: error.message
+    });
   }
 };
 
@@ -31,10 +43,10 @@ const updateVehicle = async (req, res) => {
   try {
     const updatedVehicle = await vehicleService.updateVehicle(req.params.id, req.body);
     res.status(200).json(updatedVehicle);
-    logger.info('Vehicle updated successfully');
+    console.info('Vehicle updated successfully');
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });
-    logger.error('Error updating vehicle: ' + err.message);
+    console.error('Error updating vehicle: ' + err.message);
   }
 };
 
@@ -50,10 +62,10 @@ const deleteVehicle = async (req, res) => {
   try {
     await vehicleService.deleteVehicle(req.params.id);
     res.status(200).json({ message: 'Vehicle deleted successfully' });
-    logger.info('Vehicle deleted successfully');
+    console.info('Vehicle deleted successfully');
   } catch (err) {
     res.status(err.status || 500).json({ message: err.message });
-    logger.error('Error deleting vehicle: ' + err.message);
+    console.error('Error deleting vehicle: ' + err.message);
   }
 };
 
@@ -70,14 +82,14 @@ const getVehicleById = async (req, res) => {
     const vehicle = await vehicleService.getVehicleById(req.params.id);
     if (vehicle) {
       res.status(200).json(vehicle);
-      logger.info('Vehicle fetched successfully by ID: ' + req.params.id);
+      console.info('Vehicle fetched successfully by ID: ' + req.params.id);
     } else {
       res.status(404).json({ message: 'Vehicle not found' });
-      logger.warn('Vehicle not found with ID: ' + req.params.id);
+      console.warn('Vehicle not found with ID: ' + req.params.id);
     }
   } catch (err) {
     res.status(500).json({ error: 'Server error while fetching vehicle' });
-    logger.error('Error fetching vehicle: ' + err.message);
+    console.error('Error fetching vehicle: ' + err.message);
   }
 };
 
@@ -93,10 +105,10 @@ const getAllVehicles = async (req, res) => {
   try {
     const vehicles = await vehicleService.getAllVehicles();
     res.status(200).json(vehicles);
-    logger.info('All vehicles fetched successfully');
+    console.info('All vehicles fetched successfully');
   } catch (err) {
     res.status(500).json({ error: 'Server error while fetching vehicles' });
-    logger.error('Error fetching vehicles: ' + err.message);
+    console.error('Error fetching vehicles: ' + err.message);
   }
 };
 
@@ -114,14 +126,14 @@ const searchVehicleByVin = async (req, res) => {
     const vehicle = await vehicleService.searchVehicleByVin(vin);
     if (vehicle) {
       res.status(200).json(vehicle);
-      logger.info('Vehicle found by VIN: ' + vin);
+      console.info('Vehicle found by VIN: ' + vin);
     } else {
       res.status(404).json({ message: 'Vehicle not found' });
-      logger.warn('Vehicle not found with VIN: ' + vin);
+      console.warn('Vehicle not found with VIN: ' + vin);
     }
   } catch (err) {
     res.status(500).json({ error: 'Server error while searching vehicle' });
-    logger.error('Error searching vehicle by VIN: ' + err.message);
+    console.error('Error searching vehicle by VIN: ' + err.message);
   }
 };
 
@@ -137,10 +149,10 @@ const getVehiclesByMaxPrice = async (req, res) => {
   try {
     const vehicles = await vehicleService.getVehiclesByMaxPrice(req.params.maxPrice);
     res.status(200).json(vehicles);
-    logger.info('Vehicles fetched by maximum price: $' + req.params.maxPrice);
+    console.info('Vehicles fetched by maximum price: $' + req.params.maxPrice);
   } catch (err) {
     res.status(500).json({ error: 'Server error while fetching vehicles by maximum price' });
-    logger.error('Error fetching vehicles by maximum price: ' + err.message);
+    console.error('Error fetching vehicles by maximum price: ' + err.message);
   }
 };
 

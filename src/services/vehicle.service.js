@@ -1,5 +1,5 @@
-const { Op } = require('sequelize');
-const Vehicle = require('../models/vehicle.model');
+import { Op } from 'sequelize';
+import Vehicle from '../models/vehicle.model';
 
 /**
  * Create a new vehicle entry in the database.
