@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 const bcrypt = require('bcryptjs');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/token.util');
 const User = require('../models/user.model');
+=======
+import bcrypt from 'bcryptjs';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/token.utils';
+import User from '../models/user.model';
+>>>>>>> test
 
 /**
  * Register a new user.

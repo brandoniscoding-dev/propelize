@@ -1,5 +1,5 @@
-const authService = require('../services/auth.service');
-const User = require('../models/user.model');
+import * as  authService from '../services/auth.service';
+import User from'../models/user.model';
 
 /**
  * Controller to handle user registration.
