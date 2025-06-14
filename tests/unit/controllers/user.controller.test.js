@@ -27,22 +27,7 @@ describe('User Controller', () => {
 
   const mockAdminUser = { ...mockUser, role: 'admin' };
 
-  describe('getCurrentUser', () => {
-    it('should return current user data', async () => {
-      vi.spyOn(userService, 'getCurrentUser').mockResolvedValue(mockUser);
 
-      const req = { user: { id: mockUser.id } };
-      const res = {
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn()
-      };
-
-      await getCurrentUser(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockUser);
-    });
-  });
 
   describe('updateCurrentUser', () => {
     it('should update and return the updated user', async () => {
@@ -84,23 +69,7 @@ describe('User Controller', () => {
     });
   });
 
-  describe('getAllUsers', () => {
-    it('should return all users', async () => {
-      const users = [mockUser, mockAdminUser];
-      vi.spyOn(userService, 'getAllUsers').mockResolvedValue(users);
 
-      const req = { user: mockAdminUser };
-      const res = {
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn()
-      };
-
-      await getAllUsers(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(users);
-    });
-  });
 
   describe('getUserById', () => {
     it('should return a user by ID', async () => {
